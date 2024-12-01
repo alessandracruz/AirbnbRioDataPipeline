@@ -396,3 +396,43 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+#gitignore do projeto
+
+# Logs
+*.log
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+terraform.tfstate
+terraform.tfstate.backup
+terraform.tfvars
+.terraform.lock.hcl
+
+# Sensitive Files
+.env
+*.key
+*.pem
+.secrets/
+
+# Data
+data/raw/
+data/temp/
+data/output/
+
+# OS/IDE Specific
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.mypy_cache/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Streamlit
+.streamlit/
