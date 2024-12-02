@@ -419,9 +419,7 @@ terraform.tfvars
 .secrets/
 
 # Data
-data/raw/
-data/temp/
-data/output/
+data/
 
 # OS/IDE Specific
 .DS_Store
@@ -429,6 +427,8 @@ Thumbs.db
 .vscode/
 .idea/
 .mypy_cache/
+*.pyc
+*.pyo
 __pycache__/
 *.py[cod]
 *.egg-info/
