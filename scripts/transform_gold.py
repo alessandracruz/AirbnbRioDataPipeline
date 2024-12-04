@@ -41,20 +41,29 @@ def process_gold_data(calendar_df, listings_df):
         total_listings=("id_anuncio", "count")
     ).reset_index()
 
-    price_by_region_type["preco_medio"] = price_by_region_type["preco_medio"].apply(lambda x: f"R$ {x}")
+    price_by_region_type["preco_medio"] = price_by_region_type["preco_medio"].apply(lambda x: f"R$ {x:.2f}")
 
     calendar_df["data"] = pd.to_datetime(calendar_df["data"])
     calendar_df["mes"] = calendar_df["data"].dt.to_period("M")
-    occupancy_rate = calendar_df.groupby(["mes", "id_anuncio"]).agg(
-        ocupacao=("disponivel", lambda x: round((x == "t").mean() * 100, 1))
-    ).reset_index()
+
+    dias_ocupados = calendar_df[calendar_df["disponivel"] == "t"]
+    ocupacao_por_mes = (
+        dias_ocupados.groupby(["mes", "id_anuncio"]).size().reset_index(name="dias_ocupados")
+    )
+    total_dias_por_mes = (
+        calendar_df.groupby(["mes", "id_anuncio"]).size().reset_index(name="total_dias")
+    )
+
+    taxa_ocupacao = pd.merge(ocupacao_por_mes, total_dias_por_mes, on=["mes", "id_anuncio"])
+    taxa_ocupacao["taxa_de_ocupacao"] = (taxa_ocupacao["dias_ocupados"] / taxa_ocupacao["total_dias"]) * 100
+    taxa_ocupacao["taxa_de_ocupacao"] = taxa_ocupacao["taxa_de_ocupacao"].apply(lambda x: f"{round(x, 1)}%")
 
     popularity_by_type = listings_df.groupby("tipo_acomodacao").agg(
         total_listings=("id_anuncio", "count"),
-        avaliacao_media=("avaliacao", lambda x: x.dropna().mean())  # Ignorar valores nulos
+        avaliacao_media=("avaliacao", lambda x: round(x.dropna().mean(), 2))  # Ignorar valores nulos
     ).reset_index()
 
-    return price_by_region_type, occupancy_rate, popularity_by_type
+    return price_by_region_type, taxa_ocupacao, popularity_by_type
 
 if __name__ == "__main__":
     connection_string = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
