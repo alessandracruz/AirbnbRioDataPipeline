@@ -266,6 +266,9 @@ ServiceFabricBackup/
 *.ldf
 *.ndf
 
+# PowerBI files
+*.pbix
+
 # Business Intelligence projects
 *.rdl.data
 *.bim.layout
@@ -436,3 +439,7 @@ __pycache__/
 
 # Streamlit
 .streamlit/
+
+# Folders
+visualizations/
+backup/

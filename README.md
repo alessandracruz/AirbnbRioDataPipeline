@@ -2,7 +2,7 @@
 
 ## Descrição
 
-Este projeto implementa um pipeline de dados no Azure, usando Python, Terraform e Blob Storage, para analisar tendências de hospedagem no Airbnb do Rio de Janeiro. O objetivo é explorar dados em múltiplas camadas (Raw, Bronze, Silver e Gold), gerar insights sobre preços, avaliações e sazonalidade, além de demonstrar habilidades em análise de dados, inteligência artificial e integração com a nuvem.
+Este projeto implementa um pipeline de dados no Azure, usando Python, Terraform e Blob Storage, para analisar tendências de hospedagem no Airbnb do Rio de Janeiro. O objetivo é explorar dados em múltiplas camadas (Raw, Bronze, Silver e Gold), gerar insights sobre preços, avaliações e sazonalidade, além de demonstrar habilidades em análise de dados, inteligência artificial e integração com a nuvem. Além disso, para garantir a segurança dos dados, foi criado um backup na nuvem utilizando o Microsoft Fabric e o OneLake, que assegura a continuidade e acessibilidade dos dados para estudos futuros.
 
 ## Tecnologias Utilizadas
 
@@ -31,12 +31,12 @@ AirbnbRioDataPipeline/
 │   ├── preview_silver_data.py   # Pré-visualização de dados Silver
 │   ├── preview_gold_data.py     # Pré-visualização de dados Gold
 │   ├── database.py           # Gerenciamento do banco SQLite (opcional)
-├── data/                     # Dados brutos, intermediários e processados
+├── data/                     # Dados brutos, intermediários e processados (Pasta no .gitignore)
 │   ├── raw/                  # Dados originais (Raw)
 │   ├── bronze/               # Dados tratados inicialmente (Bronze)
 │   ├── silver/               # Dados limpos e estruturados (Silver)
 │   ├── gold/                 # Dados finais com métricas (Gold)
-├── visualizations/           # Dashboards e relatórios do Power BI
+├── visualizations/           # Dashboards e relatórios do Power BI (Pasta no .gitignore)
 │   ├── airbnb_rio_data_pipeline.pbix  # Arquivo do Power BI
 ├── README.md                 # Documentação do projeto
 ├── .gitignore                # Arquivos ignorados no Git
@@ -45,6 +45,7 @@ AirbnbRioDataPipeline/
 
 ## Funcionalidades
 
+- **Backup na Nuvem**: Dados do pipeline armazenados em um **Lakehouse** no **OneLake** para segurança e acessibilidade futura.
 - Ingestão de dados brutos do Airbnb (camada Raw), preservando os dados originais.
 - Tratamento inicial e padronização mínima dos dados (camada Bronze).
 - Limpeza e estruturação de dados para análises (camada Silver).
@@ -80,7 +81,40 @@ O pipeline segue os seguintes passos:
 6. **Visualização de Dados (Power BI)**:
    - Criação de dashboards interativos para análise e apresentação de insights.
 
----
+
+------
+
+## Backup e Continuidade
+
+Para evitar custos adicionais com a infraestrutura do Azure, os Resource Groups utilizados foram excluídos. Contudo, os dados foram previamente salvos no **Microsoft Fabric**, garantindo que possam ser recuperados e reutilizados no futuro.
+
+### Passos realizados:
+
+1. Os dados foram organizados nas camadas **Raw**, **Bronze**, **Silver**, e **Gold** e salvos localmente.
+2. Em seguida, foram carregados para um **Lakehouse** no **Microsoft Fabric**, integrado ao **OneLake**, mantendo a estrutura de pastas original.
+3. Essa abordagem permite recriar os Resource Groups futuramente utilizando os scripts do Terraform.
+
+### Gerenciamento dos Resource Groups com Terraform
+
+Para destruir o Resource Group e evitar custos adicionais, utilize o seguinte comando:
+
+```
+terraform destroy
+```
+
+> **Observação:** Certifique-se de estar no diretório que contém o arquivo `main.tf` antes de executar este comando.
+
+Se for necessário recriar os recursos futuramente, basta utilizar o comando abaixo:
+
+```
+terraform apply
+```
+
+> **Importante:** Antes de recriar os recursos, valide que os arquivos `.tfstate` e `.tfstate.backup` ainda estão presentes. Eles são essenciais para o Terraform reconhecer o estado anterior da infraestrutura.
+
+Essa estratégia garante que o pipeline possa ser retomado facilmente no futuro, mantendo a integridade dos dados e da infraestrutura.
+
+------
 
 ## Como Reproduzir
 
@@ -120,7 +154,7 @@ O pipeline segue os seguintes passos:
 
 5. Visualize no Power BI:
 
-   - Abra o arquivo `airbnb_rio_data_pipeline.pbix` na pasta `visualizations/` para acessar o relatório.
+   - As visualizações de Power BI não estão incluídas neste repositório como uma boa prática.   A sugestão é que cada pessoa crie suas próprias visualizações a partir dos dados fornecidos nas camadas Raw, Bronze, Silver ou Gold, de acordo com o objetivo de análise desejado.
 
 ## Licença
 
